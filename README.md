@@ -7,7 +7,7 @@ Script to parse ForeFlight logbook data. Currently exports to SQL.
 
 ```
     Usage: parseForeFlightLog.php [ForeFlight Logbook Import CSV File]
-       eg. parseForeFlightLog.php logbook_na,e.csv
+       eg. parseForeFlightLog.php logbook_name.csv
 ```
 
 Why PHP, you ask? Because it's a convenient language for this particular

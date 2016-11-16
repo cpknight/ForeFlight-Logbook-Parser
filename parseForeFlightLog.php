@@ -57,7 +57,7 @@ $flightData = csvToArray($flightCSVData);
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Next, we build a big long SQL string, and dump that to STDOUT.
 
-$sql = arrayToMySQLCreateTable("Aircraft", $aircraftData);
+$sql .= arrayToMySQLCreateTable("Aircraft", $aircraftData);
 $sql .= arrayToMySQLInsertInto("Aircraft", $aircraftData);
 $sql .= arrayToMySQLCreateTable("Flights", $flightData);
 $sql .= arrayToMySQLInsertInto("Flights", $flightData);
@@ -85,12 +85,13 @@ function arrayToMySQLInsertInto($tableName, $data)
 {
   foreach ($data as $entry)
   {
-    $columns = implode(", ",array_keys($entry));
+    $entry = array_filter($entry); // remove empty elements
+    $columns = implode("`, `",array_keys($entry));
     $escaped_values = array_map('mysql_escape_string', array_values($entry)); 
     // above line is not designed to be run with a db connection /:. not as safe as: 
     // $escaped_values = array_map('mysql_real_escape_string', array_values($entry));
-    $values  = implode(", ", $escaped_values);
-    $sql .= "INSERT INTO `$tableName` ($columns) VALUES ($values);\n";  
+    $values  = implode("\", \"", $escaped_values);
+    $sql .= "INSERT INTO `$tableName` (`$columns`) VALUES (\"$values\");\n";  
   }
 
   return $sql;
