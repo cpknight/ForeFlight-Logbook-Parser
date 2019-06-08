@@ -20,17 +20,17 @@ pilot's ForeFlight configuration options, custom fields, etc.
 
 A typical use scenario might look as follows:
 
-1. From `https://plan.foreflight.com/`, use **Logbook** > **Export**.
+1. From <https://plan.foreflight.com/>, use **Logbook** > **Export**:
   - **Export** to download a CSV (eg. `logbook_2019-06-07_23_59_59.csv`).
 
-2. From the command line use the parser and pipe the output to a file.
+2. From the command line use the parser and pipe the output to a file:
   - `./parseForeFlightLog.php logbook_2019-06-07_23_59_59.csv > logbook.sql`.
 
-3. Load the SQL into a Mysql database.
+3. Load the SQL into a Mysql database:
   - `mysql -p"p@$$w0rd" -e "CREATE DATABASE pilotLogbook"`
   - `mysql -p"p@$$w0rd" pilotLogbook < logbook.sql`
 
-4. Then query and manipulate the data using SQL.
+4. Then query and manipulate the data using SQL:
   - `mysql -p"p@$$w0rd" pilotLogbook`
     - `SHOW TABLES;`
     - `SELECT * FROM Aircraft;`
