@@ -1,8 +1,8 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php // ----------------------------------------------------------------------
-//   parseForeFlightLog.php - parses ForeFlight logbook data and spits out 
-//      MySQL queries. This supports my logbook-output project. Subject to 
-//      the BSD 3-clause license in LICENSE. 
+//   parseForeFlightLog.php - parses ForeFlight logbook data and spits out
+//      MySQL queries. This supports my logbook-output project. Subject to
+//      the BSD 3-clause license in LICENSE.
 // ---------------------------------------------------------------------------
 
 ini_set('memory_limit','512M');
@@ -13,8 +13,8 @@ date_default_timezone_set ("UTC");
 
 if (!isset($argv[1]))
 {
-  echo "Usage: " . $argv[0] . " [ForeFlight Logbook Import CSV File]\n";
-  echo "   eg. " . $argv[0] . " logbook_default.csv\n"; 
+  echo "Usage: " . $argv[0] . " [ForeFlight Logbook CSV Export File]\n";
+  echo "   eg. " . $argv[0] . " logbook_2019-06-07_23_59_59.csv\n";
   exit(-1);
 }
 
@@ -28,7 +28,7 @@ $lines = file($argv[1]);
 $aircraftDataLine = -1;
 $flightDataLine = -1;
 
-foreach ($lines as $lineNumber => $line) 
+foreach ($lines as $lineNumber => $line)
 {
   if (substr($line, 0, 14) === "Aircraft Table")
     $aircraftDataLine = $lineNumber;
@@ -43,7 +43,7 @@ foreach ($lines as $lineNumber => $line)
 $aircraftCSVData = array();
 $flightCSVData = array();
 
-foreach ($lines as $lineNumber => $line) 
+foreach ($lines as $lineNumber => $line)
 {
   if (($lineNumber > $aircraftDataLine) and ($lineNumber < ($flightDataLine - 1)))
     array_push($aircraftCSVData,$line);
@@ -64,7 +64,7 @@ $sql .= arrayToMySQLInsertInto("Flights", $flightData);
 print $sql;
 
 // ---------------------------------------------------------------------------
-// Function to convert the CSV data into an array. 
+// Function to convert the CSV data into an array.
 // ---------------------------------------------------------------------------
 
 function csvToArray($data)
@@ -86,12 +86,10 @@ function arrayToMySQLInsertInto($tableName, $data)
   foreach ($data as $entry)
   {
     $entry = array_filter($entry); // remove empty elements
-    $columns = implode("`, `",array_keys($entry));
-    $escaped_values = array_map('mysql_escape_string', array_values($entry)); 
-    // above line is not designed to be run with a db connection /:. not as safe as: 
-    // $escaped_values = array_map('mysql_real_escape_string', array_values($entry));
+    $columns = implode("`,`",array_keys($entry));
+    $escaped_values = array_map('addslashes', array_values($entry));
     $values  = implode("\", \"", $escaped_values);
-    $sql .= "INSERT INTO `$tableName` (`$columns`) VALUES (\"$values\");\n";  
+    $sql .= "INSERT INTO `$tableName` (`$columns`) VALUES (\"$values\");\n";
   }
 
   return $sql;
